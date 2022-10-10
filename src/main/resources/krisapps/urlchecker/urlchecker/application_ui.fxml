@@ -26,7 +26,7 @@
                   <Font name="Segoe UI" size="18.0"/>
                </font>
             </Label>
-            <Pane fx:id="setupPanel" layoutX="181.0" layoutY="110.0" onMouseMoved="#refreshSetupInfo" prefHeight="401.0"
+            <Pane fx:id="setupPanel" layoutX="181.0" layoutY="110.0" onMouseMoved="#refreshSetupInfo" prefHeight="489.0"
                   prefWidth="498.0">
                <children>
                   <Label fx:id="setup_label" layoutX="169.0" layoutY="14.0" text="Set up your scan">
@@ -34,33 +34,35 @@
                         <Font name="Segoe UI" size="22.0"/>
                      </font>
                   </Label>
-                  <TextField fx:id="url_field" layoutX="26.0" layoutY="60.0" prefHeight="34.0" prefWidth="447.0"
-                             promptText="Enter the URL to check"/>
+                  <TextField fx:id="url_field" layoutX="26.0" layoutY="60.0"
+                             onInputMethodTextChanged="#refreshSetupInfo" onKeyTyped="#refreshSetupInfo"
+                             prefHeight="34.0" prefWidth="447.0" promptText="Enter the URL to check"/>
                   <CheckBox fx:id="toggle_basicinfo" accessibleText="Include basic website info in the final report?"
-                            layoutX="26.0" layoutY="111.0" mnemonicParsing="false"
-                            text="Show basic information about website"/>
+                            layoutX="26.0" layoutY="111.0" mnemonicParsing="false" onAction="#refreshSetupInfo"
+                            text="Collect Basic Website Info"/>
                   <CheckBox fx:id="toggle_screamertest"
                             accessibleText="Should the scanner apply extra checks to make sure it's not a screamer?"
-                            layoutX="26.0" layoutY="140.0" mnemonicParsing="false" text="Run a screamer test"/>
-                  <Button fx:id="button_start" accessibleText="Commence scan!" alignment="CENTER" layoutX="174.0"
-                          layoutY="345.0" mnemonicParsing="false" onAction="#startTest" prefHeight="25.0"
-                          prefWidth="150.0" style="-fx-background-color: white; -fx-border-color: black;"
-                          text="Test the URL!">
+                            layoutX="26.0" layoutY="140.0" mnemonicParsing="false" onAction="#refreshSetupInfo"
+                            text="Enable ScreamerTest"/>
+                  <Button fx:id="button_start" accessibleText="Commence scan!" alignment="CENTER" layoutX="25.0"
+                          layoutY="446.0" maxHeight="29.0" maxWidth="447.0" minHeight="-Infinity" minWidth="-Infinity"
+                          mnemonicParsing="false" onAction="#startTest" prefHeight="29.0" prefWidth="447.0"
+                          style="-fx-background-color: white; -fx-border-color: black;" text="Test the URL!">
                      <font>
                         <Font name="Segoe UI Black" size="13.0"/>
                      </font>
                   </Button>
-                  <Pane fx:id="status_container" layoutX="26.0" layoutY="296.0" prefHeight="34.0" prefWidth="447.0"
+                  <Pane fx:id="status_container" layoutX="26.0" layoutY="322.0" prefHeight="116.0" prefWidth="447.0"
                         style="-fx-border-color: black; -fx-border-width: 2;">
                      <children>
-                        <Label fx:id="label_status" layoutX="14.0" layoutY="5.0" prefHeight="25.0" prefWidth="103.0"
+                        <Label fx:id="label_status" layoutX="14.0" layoutY="46.0" prefHeight="25.0" prefWidth="103.0"
                                text="Setup status:">
                            <font>
                               <Font size="13.0"/>
                            </font>
                         </Label>
-                        <Label fx:id="label_statusvalue" layoutX="112.0" layoutY="5.0" prefHeight="25.0"
-                               prefWidth="329.0" text="All good">
+                        <Label fx:id="label_statusvalue" layoutX="104.0" layoutY="9.0" prefHeight="99.0"
+                               prefWidth="329.0" text="No issues detected">
                            <font>
                               <Font name="Segoe UI Black" size="13.0"/>
                            </font>
@@ -69,16 +71,18 @@
                   </Pane>
                   <CheckBox fx:id="toggle_noimages"
                             accessibleText="Should this site contain images assuming it is not a screamer?"
-                            layoutX="26.0" layoutY="166.0" mnemonicParsing="false"
-                            text="This site should not contain images (if you've selected the screamer test)"/>
+                            layoutX="52.0" layoutY="162.0" mnemonicParsing="false" onAction="#refreshSetupInfo"
+                            text="This site should not contain images"/>
                   <CheckBox fx:id="toggle_novideos"
                             accessibleText="Should this site contain videos assuming it is not a screamer?"
-                            layoutX="26.0" layoutY="192.0" mnemonicParsing="false"
-                            text="This site should not contain videos (if you've selected the screamer test)"/>
+                            layoutX="52.0" layoutY="188.0" mnemonicParsing="false" onAction="#refreshSetupInfo"
+                            text="This site should not contain videos"/>
                   <CheckBox fx:id="toggle_createfile"
                             accessibleText="For the tech-savy: if you wish to manually review the website's html code, enable this."
-                            layoutX="26.0" layoutY="222.0" mnemonicParsing="false"
+                            layoutX="52.0" layoutY="212.0" mnemonicParsing="false" onAction="#refreshSetupInfo"
                             text="Create a file with website html on desktop"/>
+                  <CheckBox fx:id="toggle_reportfile" layoutX="25.0" layoutY="251.0" mnemonicParsing="false"
+                            text="Generate a website report file"/>
                </children>
             </Pane>
             <Pane fx:id="scanPanel" layoutX="115.0" layoutY="122.0" prefHeight="498.0" prefWidth="631.0"

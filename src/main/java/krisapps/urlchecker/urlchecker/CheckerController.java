@@ -1,5 +1,6 @@
 package krisapps.urlchecker.urlchecker;
 
+import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -10,6 +11,7 @@ import javafx.stage.WindowEvent;
 import krisapps.urlchecker.urlchecker.enums.ScanResult;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -17,6 +19,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.*;
+import java.util.Date;
 import java.util.HashMap;
 
 public class CheckerController {
@@ -71,6 +74,7 @@ public class CheckerController {
     private CheckBox toggle_noimages;
     @FXML
     private CheckBox toggle_novideos;
+    String user = System.getProperty("user.name");
     @FXML
     private CheckBox toggle_createfile;
     //Textfields
@@ -95,14 +99,89 @@ public class CheckerController {
         };
     }
 
+    @FXML
+    private CheckBox toggle_reportfile;
+
+    public static void delay(long millis, Runnable continuation) {
+        Task<Void> sleeper = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                try {
+                    Thread.sleep(millis);
+                } catch (InterruptedException e) {
+                }
+                return null;
+            }
+        };
+        sleeper.setOnSucceeded(event -> continuation.run());
+        new Thread(sleeper).start();
+    }
+
     public void refreshSetupInfo() {
+        label_statusvalue.setText("All good!");
+        label_statusvalue.setTextFill(Paint.valueOf("lime"));
         if (url_field.getText().isEmpty()) {
-            label_statusvalue.setTextFill(Paint.valueOf("red"));
-            label_statusvalue.setText("Please provide a URL");
-        } else {
-            label_statusvalue.setTextFill(Paint.valueOf("lime"));
-            label_statusvalue.setText("All good");
+            if (!label_statusvalue.getText().contains("No URL provided")) {
+                label_statusvalue.setText(label_statusvalue.getText().replace("All good!", "") + "No URL provided\n");
+                label_statusvalue.setTextFill(Paint.valueOf("red"));
+            } else {
+                label_statusvalue.setTextFill(Paint.valueOf("red"));
+            }
         }
+
+        if (!toggle_screamertest.isSelected() && toggle_createfile.isSelected()) {
+            if (!label_statusvalue.getText().contains("Enable Screamer Test to download HTML")) {
+                label_statusvalue.setText(label_statusvalue.getText().replace("All good!", "") + "Enable Screamer Test to download HTML\n");
+                label_statusvalue.setTextFill(Paint.valueOf("red"));
+            } else {
+                label_statusvalue.setTextFill(Paint.valueOf("red"));
+            }
+        }
+
+        if (toggle_screamertest.isSelected() && !toggle_novideos.isSelected() && !toggle_noimages.isSelected()) {
+            if (!label_statusvalue.getText().contains("Select scan options for Screamer Test")) {
+                label_statusvalue.setText(label_statusvalue.getText().replace("All good!", "") + "Select scan options for Screamer Test\n");
+                label_statusvalue.setTextFill(Paint.valueOf("red"));
+            } else {
+                label_statusvalue.setTextFill(Paint.valueOf("red"));
+            }
+        }
+
+        if (!toggle_screamertest.isSelected() && (toggle_novideos.isSelected() || toggle_noimages.isSelected())) {
+            if (!label_statusvalue.getText().contains("Enable Screamer Test to use selected options")) {
+                label_statusvalue.setText(label_statusvalue.getText().replace("All good!", "") + "Enable Screamer Test to use selected options\n");
+                label_statusvalue.setTextFill(Paint.valueOf("red"));
+            } else {
+                label_statusvalue.setTextFill(Paint.valueOf("red"));
+            }
+        }
+
+        if (!toggle_screamertest.isSelected() && !toggle_basicinfo.isSelected()) {
+            if (!label_statusvalue.getText().contains("No options have been selected.")) {
+                label_statusvalue.setText(label_statusvalue.getText().replace("All good!", "") + "No options have been selected.\n");
+                label_statusvalue.setTextFill(Paint.valueOf("red"));
+            } else {
+                label_statusvalue.setTextFill(Paint.valueOf("red"));
+            }
+        }
+
+        if (!url_field.getText().startsWith("https://")) {
+            if (!label_statusvalue.getText().contains("Please include 'https://' in front of your URL.")) {
+                label_statusvalue.setText(label_statusvalue.getText().replace("All good!", "") + "Please include 'https://' in front of your URL.\n");
+                label_statusvalue.setTextFill(Paint.valueOf("red"));
+            } else {
+                label_statusvalue.setTextFill(Paint.valueOf("red"));
+            }
+        }
+
+        if (label_statusvalue.getText().trim().equals("All good!")) {
+            button_start.setDisable(false);
+            button_start.setText("Test the URL!");
+        } else {
+            button_start.setDisable(true);
+            button_start.setText("Correct the errors to start the test");
+        }
+
     }
 
     void procedure() {
@@ -135,14 +214,48 @@ public class CheckerController {
         } catch (IOException e) {
             log("Could not open the connection: " + e.getMessage(), "Failed to check the URL!");
             label_scan.setText("Failed to check the URL!");
-            scanResult = ScanResult.POTENTIALLY_UNSAFE;
+            scanProgress.setProgress(1);
+            scanResult = ScanResult.INCONCLUSIVE;
+        }
+    }
+
+    void log(String text) {
+        log.setText(log.getText() + "\n" + text);
+        operation_label.setText(text);
+    }
+
+    void log(String text, String labelText) {
+        log.setText(log.getText() + "\n" + text);
+        operation_label.setText(labelText);
+    }
+
+    String imagesFound() {
+        if (toggle_screamertest.isSelected()) {
+            return String.valueOf(images_n);
+        } else {
+            return "N/A";
+        }
+    }
+
+    String videosFound() {
+        if (toggle_screamertest.isSelected()) {
+            return String.valueOf(videos_n);
+        } else {
+            return "N/A";
+        }
+    }
+
+    String loopedVideosFound() {
+        if (toggle_screamertest.isSelected()) {
+            return String.valueOf(loopedVideos_n);
+        } else {
+            return "N/A";
         }
     }
 
     private void getInfo(HttpsURLConnection connection) {
 
-        String user = System.getProperty("user.name");
-        File file = new File("C:/Users/" + user + "/Desktop/analysys.txt");
+        File file = new File("C:/Users/" + user + "/Desktop/website_html.txt");
 
         scanProgress.setProgress(.3);
         try {
@@ -237,7 +350,7 @@ public class CheckerController {
                         break;
                     case ERROR:
                         label_scan.setTextFill(Paint.valueOf("blue"));
-                        label_scan.setText("ERROR (scan did not complete)");
+                        label_scan.setText("ERROR (something may have forced the scan to stop)");
                         break;
                     case UNSAFE:
                         label_scan.setTextFill(Paint.valueOf("orange"));
@@ -248,12 +361,91 @@ public class CheckerController {
                         label_scan.setText("POTENTIALLY UNSAFE");
                         break;
                 }
+
+                if (toggle_reportfile.isSelected()) {
+                    log("Generating a report onto your desktop...", "Generating a report...");
+                    Document website = Jsoup.parse(connection.getURL(), 30000);
+                    Elements links = website.select("a[href]");
+                    Elements images = website.select("img");
+                    Elements videos = website.select("img[src$=.gif]");
+                    videos = website.select("img[src$=.mov]");
+                    videos = website.select("img[src$=.mp4]");
+                    videos = website.select("img[src$=.avi]");
+                    videos = website.select("video");
+                    Elements loopedVideos = website.select("video[loop]");
+
+                    links_n = links.size();
+                    images_n = images.size();
+                    videos_n = videos.size();
+                    loopedVideos_n = loopedVideos.size();
+
+                    File report = new File("C:/Users/" + user + "/Desktop/website_report.txt");
+                    FileWriter fw = new FileWriter(report);
+                    fw.write("# Website Report for '" + connection.getURL() + "' #\n"
+                            + "Report took place on " + new Date() + "\n"
+                            + "Detected links[" + links_n + "]\n" + listLinks(links) + "\n"
+                            + "============================================================\n"
+                            + "Detected Images[" + images_n + "]\n" + listImages(images) + "\n"
+                            + "============================================================\n"
+                            + "Detected Videos (Looped/Not looped)[" + (videos_n + loopedVideos_n) + "]\n" + listVideos(videos) + "\n"
+                            + "============================================================\n"
+                            + "HTTP Status Code: " + connection.getResponseCode() + " (" + connection.getResponseMessage() + ")\n"
+                            + "Final Scan Conclusion: " + scanResult.name() + "\n"
+                            + "# END REPORT #"
+                    );
+                    fw.flush();
+                    fw.close();
+                }
+
+
                 log("Scan complete.", "Completed!");
                 scanProgress.setProgress(1);
 
             } else {
-                log("HTTP returned a non-200 response.", "Website did not respond.");
-                scanResult = ScanResult.POTENTIALLY_UNSAFE;
+                log("HTTP returned a non-200 response.", "Website did not respond in an expected way.");
+                switch (connection.getResponseCode()) {
+
+                    case 404:
+                        label_scan.setText("Requested content could not be found.");
+                        label_scan.setTextFill(Paint.valueOf("yellow"));
+                        scanResult = ScanResult.INCONCLUSIVE;
+                        break;
+
+                    case 401:
+                    case 403:
+                        label_scan.setText("Website requires authorization or declined the request.");
+                        label_scan.setTextFill(Paint.valueOf("#8142f5"));
+                        scanResult = ScanResult.INCONCLUSIVE;
+                        break;
+
+                    case 307:
+                    case 308:
+                        label_scan.setText("The website wants to redirect us.");
+                        label_scan.setTextFill(Paint.valueOf("#f542aa"));
+                        scanResult = ScanResult.INCONCLUSIVE;
+                        break;
+
+                    case 400:
+                        label_scan.setText("Website couldn't understand the gibberish.");
+                        label_scan.setTextFill(Paint.valueOf("#9c1736"));
+                        scanResult = ScanResult.ERROR;
+                        break;
+
+                    case 408:
+                        label_scan.setText("Website decided not to hurry so we ran out of time.");
+                        label_scan.setTextFill(Paint.valueOf("#2b610f"));
+                        scanResult = ScanResult.INCONCLUSIVE;
+                        break;
+
+                    default:
+                        label_scan.setText("HTTP " + connection.getResponseCode() + ": " + connection.getResponseMessage());
+                        label_scan.setTextFill(Paint.valueOf("#32b6bf"));
+                        scanResult = ScanResult.ERROR;
+                        log("Scan could not continue because the website server returned " + connection.getResponseCode() + " in regards to " + connection.getURL());
+                        break;
+
+                }
+                scanProgress.setProgress(1);
                 button_finish.setDisable(false);
             }
         } catch (IOException e) {
@@ -312,52 +504,42 @@ public class CheckerController {
         operation_label.setText(infoString);
     }
 
-    void log(String text) {
-        log.setText(log.getText() + "\n" + text);
-        operation_label.setText(text);
-    }
-
-    void log(String text, String labelText) {
-        log.setText(log.getText() + "\n" + text);
-        operation_label.setText(labelText);
-    }
-
-    String imagesFound() {
-        if (toggle_screamertest.isSelected()) {
-            return String.valueOf(images_n);
-        } else {
-            return "N/A";
+    String listLinks(Elements links) {
+        StringBuilder out = new StringBuilder();
+        for (Element link : links) {
+            out.append("'" + link.absUrl("href") + "'\n");
         }
+        return out.toString();
     }
 
-    String videosFound() {
-        if (toggle_screamertest.isSelected()) {
-            return String.valueOf(videos_n);
-        } else {
-            return "N/A";
+    String listImages(Elements images) {
+        StringBuilder out = new StringBuilder();
+        for (Element image : images) {
+            out.append("'" + image.absUrl("src") + "'\n");
         }
+        return out.toString();
     }
 
-    String loopedVideosFound() {
-        if (toggle_screamertest.isSelected()) {
-            return String.valueOf(loopedVideos_n);
-        } else {
-            return "N/A";
+    String listVideos(Elements videos) {
+        StringBuilder out = new StringBuilder();
+        for (Element video : videos) {
+            out.append("'" + video.absUrl("src") + "'\n");
         }
+        return out.toString();
     }
 
     public void startTest() {
         setupPanel.setVisible(false);
         scanPanel.setVisible(true);
-        procedure();
+        delay(500, this::procedure);
     }
 
     public void reset() {
         infoString = "";
         scanProgress.setProgress(0);
         log.clear();
-        operation_label.setText("Waiting...");
-        label_scan.setText("Waiting...");
+        operation_label.setText("Please wait...");
+        label_scan.setText("Working...");
         setupPanel.setVisible(true);
         scanPanel.setVisible(false);
     }
