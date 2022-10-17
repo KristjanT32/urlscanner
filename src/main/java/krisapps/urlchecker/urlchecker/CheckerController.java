@@ -28,6 +28,7 @@ public class CheckerController {
     int videos_n = 0;
     int images_n = 0;
     int loopedVideos_n = 0;
+    int iframes_n = 0;
     HashMap<String, String> urlInfo = new HashMap<String, String>();
     ScanResult scanResult = ScanResult.SAFE;
     String infoString;
@@ -253,6 +254,14 @@ public class CheckerController {
         }
     }
 
+    private String iframesFound() {
+        if (toggle_screamertest.isSelected()) {
+            return String.valueOf(iframes_n);
+        } else {
+            return "N/A";
+        }
+    }
+
     private void getInfo(HttpsURLConnection connection) {
 
         File file = new File("C:/Users/" + user + "/Desktop/website_html.txt");
@@ -275,17 +284,21 @@ public class CheckerController {
 
                     Elements links = website.select("a[href]");
                     Elements images = website.select("img");
+                    Elements iframes = website.select("iframe");
+
                     Elements videos = website.select("img[src$=.gif]");
-                    videos = website.select("img[src$=.mov]");
-                    videos = website.select("img[src$=.mp4]");
-                    videos = website.select("img[src$=.avi]");
-                    videos = website.select("video");
+                    videos.addAll(website.select("img[src$=.mov]"));
+                    videos.addAll(website.select("img[src$=.mp4]"));
+                    videos.addAll(website.select("img[src$=.avi]"));
+                    videos.addAll(website.select("video"));
+
                     Elements loopedVideos = website.select("video[loop]");
 
                     links_n = links.size();
                     images_n = images.size();
                     videos_n = videos.size();
                     loopedVideos_n = loopedVideos.size();
+                    iframes_n = iframes.size();
 
                     for (String el : links.eachAttr("href")) {
                         log("Link: " + el, "Scanning links...");
@@ -301,9 +314,6 @@ public class CheckerController {
 
                     if (toggle_noimages.isSelected()) {
                         if (images.size() > 0) {
-                            unsafeness_score += 1;
-                        }
-                        if (links.size() > 5) {
                             unsafeness_score += 1;
                         }
                     }
@@ -367,16 +377,21 @@ public class CheckerController {
                     Document website = Jsoup.parse(connection.getURL(), 30000);
                     Elements links = website.select("a[href]");
                     Elements images = website.select("img");
+                    Elements iframes = website.select("iframe");
+
                     Elements videos = website.select("img[src$=.gif]");
-                    videos = website.select("img[src$=.mov]");
-                    videos = website.select("img[src$=.mp4]");
-                    videos = website.select("img[src$=.avi]");
-                    videos = website.select("video");
+                    videos.addAll(website.select("img[src$=.mov]"));
+                    videos.addAll(website.select("img[src$=.mp4]"));
+                    videos.addAll(website.select("img[src$=.avi]"));
+                    videos.addAll(website.select("video"));
+
                     Elements loopedVideos = website.select("video[loop]");
 
                     links_n = links.size();
                     images_n = images.size();
                     videos_n = videos.size();
+                    iframes_n = iframes.size();
+
                     loopedVideos_n = loopedVideos.size();
 
                     File report = new File("C:/Users/" + user + "/Desktop/website_report.txt");
@@ -388,6 +403,8 @@ public class CheckerController {
                             + "Detected Images[" + images_n + "]\n" + listImages(images) + "\n"
                             + "============================================================\n"
                             + "Detected Videos (Looped/Not looped)[" + (videos_n + loopedVideos_n) + "]\n" + listVideos(videos) + "\n"
+                            + "============================================================\n"
+                            + "Detected IFrames (possibly contain a video)[" + iframes_n + "]\n" + listIframes(iframes) + "\n"
                             + "============================================================\n"
                             + "HTTP Status Code: " + connection.getResponseCode() + " (" + connection.getResponseMessage() + ")\n"
                             + "Final Scan Conclusion: " + scanResult.name() + "\n"
@@ -407,7 +424,7 @@ public class CheckerController {
 
                     case 404:
                         label_scan.setText("Requested content could not be found.");
-                        label_scan.setTextFill(Paint.valueOf("yellow"));
+                        label_scan.setTextFill(Paint.valueOf("#f5a836"));
                         scanResult = ScanResult.INCONCLUSIVE;
                         break;
 
@@ -477,6 +494,7 @@ public class CheckerController {
                         + "\nLinks found: " + links_n
                         + "\nImages found: " + imagesFound()
                         + "\nVideos found (non-looped): " + videosFound()
+                        + "\nIframes (could contain a video, check report file): " + iframesFound()
                         + "\nConclusion: " + scanResult.name()
                 ;
             }
@@ -524,6 +542,14 @@ public class CheckerController {
         StringBuilder out = new StringBuilder();
         for (Element video : videos) {
             out.append("'" + video.absUrl("src") + "'\n");
+        }
+        return out.toString();
+    }
+
+    String listIframes(Elements iframes) {
+        StringBuilder out = new StringBuilder();
+        for (Element iframe : iframes) {
+            out.append("IFrame '" + iframe.absUrl("src") + "'\n");
         }
         return out.toString();
     }
