@@ -27,9 +27,9 @@
 <hr>
 <h2>Hardcoded checked elements</h2>
 <hr>
-<b>These are the elements that the program checks.</b>
-- a-tags that contain a href
-- img-tags
-- iframe-tags
-- video-tags
-- video-tags that have the "loop" property
+<b>These are the elements that the program checks</b>
+* a-tags that contain a href
+* img-tags
+* iframe-tags
+* video-tags
+  * video-tags that have the "loop" property
