@@ -16,12 +16,17 @@ public class CheckerApplication extends javafx.application.Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(CheckerApplication.class.getResource("application_ui.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 900, 700);
+
+        // Configure window properties.
+        stage.setResizable(false);
         stage.setTitle("URL Checker");
         stage.getIcons().add(new Image("/images/icon.jpeg"));
         stage.setScene(scene);
         stage.show();
+
         scene.getWindow().setOnCloseRequest(CheckerController.onWindowClosed());
-        scene.getWindow().setOnShown(CheckerController.onWindowShown());
+        CheckerController.sceneInstance = scene;
+        CheckerController.stageInstance = stage;
     }
 
 

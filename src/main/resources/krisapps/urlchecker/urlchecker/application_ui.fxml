@@ -11,48 +11,39 @@
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
    </padding>
    <children>
+      <Label fx:id="window_label" text="KrisApps Website URL Analyzer" textAlignment="CENTER">
+         <font>
+            <Font name="Segoe UI" size="28.0"/>
+         </font>
+      </Label>
+      <Label fx:id="window_subtitle" alignment="TOP_CENTER" contentDisplay="RIGHT" prefHeight="23.0" prefWidth="581.0"
+             text="Enter the URL and select your desired options to scan" textAlignment="CENTER" wrapText="true">
+         <font>
+            <Font name="Segoe UI" size="18.0"/>
+         </font>
+      </Label>
       <Pane fx:id="container" prefHeight="620.0" prefWidth="860.0">
          <children>
-            <Label fx:id="window_label" layoutX="237.0" layoutY="14.0" text="KrisApps Website URL Analyzer"
-                   textAlignment="CENTER">
-               <font>
-                  <Font name="Segoe UI" size="28.0"/>
-               </font>
-            </Label>
-            <Label fx:id="window_subtitle" alignment="TOP_CENTER" contentDisplay="RIGHT" layoutX="292.0" layoutY="48.0"
-                   prefHeight="75.0" prefWidth="276.0" text="Enter the URL and select your desired options to scan"
-                   textAlignment="CENTER" wrapText="true">
-               <font>
-                  <Font name="Segoe UI" size="18.0"/>
-               </font>
-            </Label>
-            <Pane fx:id="setupPanel" layoutX="181.0" layoutY="110.0" onMouseMoved="#refreshSetupInfo" prefHeight="489.0"
-                  prefWidth="498.0">
+            <Pane fx:id="setupPanel" layoutX="98.0" layoutY="7.0" onMouseMoved="#refreshSetupInfo" prefHeight="554.0"
+                  prefWidth="666.0">
                <children>
-                  <Label fx:id="setup_label" layoutX="169.0" layoutY="14.0" text="Set up your scan">
-                     <font>
-                        <Font name="Segoe UI" size="22.0"/>
-                     </font>
-                  </Label>
-                  <TextField fx:id="url_field" layoutX="26.0" layoutY="60.0"
+                  <TextField fx:id="url_field" layoutX="71.0" layoutY="14.0"
                              onInputMethodTextChanged="#refreshSetupInfo" onKeyTyped="#refreshSetupInfo"
-                             prefHeight="34.0" prefWidth="447.0" promptText="Enter the URL to check"/>
-                  <CheckBox fx:id="toggle_basicinfo" accessibleText="Include basic website info in the final report?"
-                            layoutX="26.0" layoutY="111.0" mnemonicParsing="false" onAction="#refreshSetupInfo"
-                            text="Collect Basic Website Info"/>
-                  <CheckBox fx:id="toggle_screamertest"
-                            accessibleText="Should the scanner apply extra checks to make sure it's not a screamer?"
-                            layoutX="26.0" layoutY="140.0" mnemonicParsing="false" onAction="#refreshSetupInfo"
-                            text="Enable ScreamerTest"/>
-                  <Button fx:id="button_start" accessibleText="Commence scan!" alignment="CENTER" layoutX="25.0"
-                          layoutY="446.0" maxHeight="29.0" maxWidth="447.0" minHeight="-Infinity" minWidth="-Infinity"
+                             prefHeight="49.0" prefWidth="524.0" promptText="Enter the URL to check"
+                             style="-fx-border-color: black; -fx-border-width: 3;">
+                     <font>
+                        <Font name="Segoe UI" size="15.0"/>
+                     </font>
+                  </TextField>
+                  <Button fx:id="button_start" accessibleText="Commence scan!" alignment="CENTER" layoutX="116.0"
+                          layoutY="516.0" maxHeight="29.0" maxWidth="447.0" minHeight="-Infinity" minWidth="-Infinity"
                           mnemonicParsing="false" onAction="#startTest" prefHeight="29.0" prefWidth="447.0"
                           style="-fx-background-color: white; -fx-border-color: black;" text="Test the URL!">
                      <font>
                         <Font name="Segoe UI Black" size="13.0"/>
                      </font>
                   </Button>
-                  <Pane fx:id="status_container" layoutX="26.0" layoutY="322.0" prefHeight="116.0" prefWidth="447.0"
+                  <Pane fx:id="status_container" layoutX="71.0" layoutY="392.0" prefHeight="116.0" prefWidth="525.0"
                         style="-fx-border-color: black; -fx-border-width: 2;">
                      <children>
                         <Label fx:id="label_status" layoutX="14.0" layoutY="46.0" prefHeight="25.0" prefWidth="103.0"
@@ -62,36 +53,71 @@
                            </font>
                         </Label>
                         <Label fx:id="label_statusvalue" layoutX="104.0" layoutY="9.0" prefHeight="99.0"
-                               prefWidth="329.0" text="No issues detected">
+                               prefWidth="412.0" text="No issues detected">
                            <font>
-                              <Font name="Segoe UI Black" size="13.0"/>
+                              <Font name="Segoe UI Black" size="15.0"/>
                            </font>
                         </Label>
                      </children>
                   </Pane>
-                  <CheckBox fx:id="toggle_noimages"
-                            accessibleText="Should this site contain images assuming it is not a screamer?"
-                            layoutX="52.0" layoutY="162.0" mnemonicParsing="false" onAction="#refreshSetupInfo"
-                            text="This site should not contain images"/>
-                  <CheckBox fx:id="toggle_novideos"
-                            accessibleText="Should this site contain videos assuming it is not a screamer?"
-                            layoutX="52.0" layoutY="188.0" mnemonicParsing="false" onAction="#refreshSetupInfo"
-                            text="This site should not contain videos"/>
-                  <CheckBox fx:id="toggle_createfile"
-                            accessibleText="For the tech-savy: if you wish to manually review the website's html code, enable this."
-                            layoutX="52.0" layoutY="212.0" mnemonicParsing="false" onAction="#refreshSetupInfo"
-                            text="Create a file with website html on desktop"/>
-                  <CheckBox fx:id="toggle_reportfile" layoutX="25.0" layoutY="251.0" mnemonicParsing="false"
-                            text="Generate a website report file"/>
+                  <StackPane alignment="TOP_CENTER" layoutX="75.0" layoutY="79.0" pickOnBounds="false"
+                             prefHeight="336.0" prefWidth="517.0">
+                     <children>
+                        <TitledPane collapsible="false" prefHeight="124.0" prefWidth="524.0" text="Extra Settings">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="98.0" prefWidth="455.0">
+                                 <children>
+                                    <CheckBox fx:id="toggle_basicinfo"
+                                              accessibleText="Include basic website info in the final report?"
+                                              layoutX="14.0" layoutY="14.0" mnemonicParsing="false"
+                                              onAction="#refreshSetupInfo" text="Collect Basic Website Info"/>
+                                    <CheckBox fx:id="toggle_reportfile" layoutX="14.0" layoutY="38.0"
+                                              mnemonicParsing="false" text="Generate a website report file"/>
+                                    <CheckBox fx:id="toggle_showlog" layoutX="14.0" layoutY="63.0"
+                                              mnemonicParsing="false" text="Show log when analyzing"/>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                           <StackPane.margin>
+                              <Insets top="170.0"/>
+                           </StackPane.margin>
+                        </TitledPane>
+                        <TitledPane collapsible="false" prefHeight="143.0" prefWidth="524.0"
+                                    text="Screamer Test Configuration">
+                           <content>
+                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="129.0" prefWidth="434.0">
+                                 <children>
+                                    <CheckBox fx:id="toggle_noimages"
+                                              accessibleText="Should this site contain images assuming it is not a screamer?"
+                                              layoutX="14.0" layoutY="42.0" mnemonicParsing="false"
+                                              onAction="#refreshSetupInfo" text="This site should not contain images"/>
+                                    <CheckBox fx:id="toggle_novideos"
+                                              accessibleText="Should this site contain videos assuming it is not a screamer?"
+                                              layoutX="14.0" layoutY="64.0" mnemonicParsing="false"
+                                              onAction="#refreshSetupInfo" text="This site should not contain videos"/>
+                                    <CheckBox fx:id="toggle_createfile"
+                                              accessibleText="For the tech-savy: if you wish to manually review the website's html code, enable this."
+                                              layoutX="14.0" layoutY="86.0" mnemonicParsing="false"
+                                              onAction="#refreshSetupInfo"
+                                              text="Create a file with website html on desktop"/>
+                                    <CheckBox fx:id="toggle_screamertest"
+                                              accessibleText="Should the scanner apply extra checks to make sure it's not a screamer?"
+                                              layoutX="14.0" layoutY="14.0" mnemonicParsing="false"
+                                              onAction="#refreshSetupInfo" text="Enable ScreamerTest"/>
+                                 </children>
+                              </AnchorPane>
+                           </content>
+                        </TitledPane>
+                     </children>
+                  </StackPane>
                </children>
             </Pane>
-            <Pane fx:id="scanPanel" layoutX="115.0" layoutY="122.0" prefHeight="498.0" prefWidth="631.0"
-                  visible="false">
+            <Pane fx:id="scanPanel" layoutX="115.0" layoutY="23.0" prefHeight="523.0" prefWidth="631.0" visible="false">
                <children>
-                  <Label fx:id="operation_label" alignment="CENTER" contentDisplay="CENTER" layoutX="67.0"
-                         layoutY="87.0" prefHeight="231.0" prefWidth="498.0" style="-fx-background-color: black;"
-                         text="Waiting..." textAlignment="CENTER" textFill="WHITE" textOverrun="CENTER_ELLIPSIS"
-                         wrapText="true">
+                  <Label fx:id="operation_label" alignment="CENTER" contentDisplay="CENTER" layoutX="68.0"
+                         layoutY="122.0" prefHeight="206.0" prefWidth="498.0" style="-fx-background-color: black;"
+                         text="Results will appear here, as soon as the test concludes" textAlignment="CENTER"
+                         textFill="WHITE" textOverrun="CENTER_ELLIPSIS" wrapText="true">
                      <font>
                         <Font name="JetBrains Mono Regular" size="13.0"/>
                      </font>
@@ -104,9 +130,13 @@
                   </Label>
                   <ProgressBar fx:id="scanProgress" layoutX="131.0" layoutY="58.0" prefHeight="18.0" prefWidth="369.0"
                                progress="0.0" style="-fx-border-color: #24d41e; -fx-border-width: 1;"/>
-                  <TextArea fx:id="log" editable="false" layoutX="67.0" layoutY="333.0" prefHeight="116.0"
-                            prefWidth="498.0" promptText="Awaiting input..." wrapText="true"/>
-                  <Button fx:id="button_finish" layoutX="289.0" layoutY="455.0" mnemonicParsing="false"
+                  <TextArea fx:id="log" editable="false" layoutX="67.0" layoutY="355.0" prefHeight="116.0"
+                            prefWidth="498.0" promptText="Output log" wrapText="true">
+                     <font>
+                        <Font size="15.0"/>
+                     </font>
+                  </TextArea>
+                  <Button fx:id="button_finish" layoutX="289.0" layoutY="480.0" mnemonicParsing="false"
                           onAction="#reset"
                           style="-fx-background-color: white; -fx-border-color: black; -fx-border-width: 2;" text="DONE"
                           textAlignment="CENTER">
@@ -114,6 +144,13 @@
                         <Font name="Segoe UI Black" size="12.0"/>
                      </font>
                   </Button>
+                  <Label fx:id="label_progressdetails" alignment="CENTER" layoutX="76.0" layoutY="76.0"
+                         prefHeight="29.0" prefWidth="481.0" text="Progress details will appear here..."
+                         textAlignment="CENTER" wrapText="true">
+                     <font>
+                        <Font name="Segoe UI Light" size="14.0"/>
+                     </font>
+                  </Label>
                </children>
             </Pane>
          </children>
