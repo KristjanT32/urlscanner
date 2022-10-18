@@ -27,6 +27,7 @@
 <hr>
 <h2>Hardcoded checked elements</h2>
 <hr>
+<p>
 <b>These are the elements that the program checks.</b>
 - a-tags that contain a href
 - img-tags
