@@ -1,18 +1,15 @@
 # URL Checker
 
 <hr>
-<h2> What's this program? </h2>
-<p>
+## What's this program? ##
   Ever gotten those pesky screamers shoved right up your [[BEAUTIFUL FACE]]?
   Well, jokes aside, this program <b>may</b> help you.
   This program will scan any valid URL you give it and
   show you the possible risks of actually entering the website.
   You can, of course specify <i>almost</i> everything to check for.
-</p>
 <hr>
-<h2> How does it work? <h2>
+## How does it work? ##
 <hr>
-<p>
   So, let me explain what it actually does.
   This program is no wizard, but has show it to be quite effective.
 <br>
@@ -25,9 +22,9 @@
   idea to visit this website.
 <br>
 <hr>
-<h2>Hardcoded checked elements</h2>
+**Hardcoded checked elements**
 <hr>
-<b>These are the elements that the program checks</b>
+*These are the elements that the program checks*
 * a-tags that contain a href
 * img-tags
 * iframe-tags
