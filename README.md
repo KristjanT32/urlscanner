@@ -1,7 +1,7 @@
-# urlscanner
+# URL Checker
 
-<h2> What's this program? </h2>
 <hr>
+<h2> What's this program? </h2>
 <p>
   Ever gotten those pesky screamers shoved right up your [[BEAUTIFUL FACE]]?
   Well, jokes aside, this program <b>may</b> help you.
@@ -9,6 +9,8 @@
   show you the possible risks of actually entering the website.
   You can, of course specify <i>almost</i> everything to check for.
 </p>
+<hr>
+
 <hr>
 <h2> How does it work? <h2>
 <hr>
@@ -26,10 +28,16 @@
 <br>
 <hr>
 <h2>Hardcoded checked elements</h2>
+<hr>
 <b>These are the elements that the program checks.</b>
-    * a-tags that contain a href 
-    * img-tags</li>
-    * iframe-tags</li>
-    * video-tags</li>
-    * video-tags that have the "loop" property</li>
+    * a-tags that contain a href
+    <br>
+    * img-tags
+    <br>
+    * iframe-tags
+    <br>
+    * video-tags
+    <br>
+    * video-tags that have the "loop" property
+    <br>
 </p>
