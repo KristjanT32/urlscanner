@@ -10,8 +10,6 @@
   You can, of course specify <i>almost</i> everything to check for.
 </p>
 <hr>
-
-<hr>
 <h2> How does it work? <h2>
 <hr>
 <p>
@@ -30,14 +28,9 @@
 <h2>Hardcoded checked elements</h2>
 <hr>
 <b>These are the elements that the program checks.</b>
-    * a-tags that contain a href
-    <br>
-    * img-tags
-    <br>
-    * iframe-tags
-    <br>
-    * video-tags
-    <br>
-    * video-tags that have the "loop" property
-    <br>
+- a-tags that contain a href
+- img-tags
+- iframe-tags
+- video-tags
+- video-tags that have the "loop" property
 </p>
