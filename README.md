@@ -22,7 +22,7 @@
 <hr>
 <h2>Hardcoded checked elements</h2>
 <hr>
-  <i>These are the elements that the program checks</i>
+  <b>The program checks the following elements:</b>
   <ul>
   <li>a-tags that contain a href</li>
   <li>img-tags</li>
