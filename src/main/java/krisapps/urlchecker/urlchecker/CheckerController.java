@@ -80,8 +80,9 @@ public class CheckerController {
     @FXML
     private CheckBox toggle_novideos;
     static Stage stageInstance;
-    File file = new File("C:/Users/" + user + "/Desktop/website_html.txt");
     String user = System.getProperty("user.name");
+
+    File file = new File("C:/Users/" + user + "/Desktop/website_html.txt");
     @FXML
     private CheckBox toggle_createfile;
     //Textfields
