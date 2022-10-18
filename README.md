@@ -11,14 +11,10 @@
 <hr>
   So, let me explain what it actually does.
   This program is no wizard, but has show it to be quite effective.
-  
-  Firstly, the program checks the HTML code for the indications of
-  videos, images, links and <iframe>'s.
-  (You can specify whether videos/images SHOULD NOT be present on the
-  website.)
-  By specifying that, you tell the program all of the possible red flags.
-  By checking all of the elements, it determines whether it'd be a good
-  idea to visit this website.
+  Firstly, the program checks the HTML code for the indications of videos, images, links and <iframe>'s.
+  (You can specify whether videos/images SHOULD NOT be present on the website.)
+  By specifying that, you tell the program all of the possible red flags. Checking all of the elements,
+  the program determines whether if it'd be a good idea to visit this website.
 <hr>
 <h2>Hardcoded checked elements</h2>
 <hr>
