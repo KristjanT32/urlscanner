@@ -24,9 +24,9 @@
 <hr>
   <b>The program checks the following elements:</b>
   <ul>
-  <li>a-tags that contain a href</li>
-  <li>img-tags</li>
-  <li>iframe-tags</li>
-  <li>video-tags</li>
-    <li>video-tags that have the "loop" property</li>
+  <li>a-tags that contain a href (= `<a href="https://www.example.org/"`</li>
+  <li>img-tags (= `<img>`</li>
+  <li>iframe-tags (= `<iframe>`)</li>
+  <li>video-tags (= `<video src="some source">`)</li>
+    <li>video-tags that have the "loop" property (= `<video src="some source" loop>`)</li>
   </ul>
