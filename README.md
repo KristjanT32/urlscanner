@@ -24,7 +24,7 @@
 <hr>
   <b>The program checks the following elements:</b>
   <ul>
-  <li>a-tags that contain a href (= `<a href="https://www.example.org/"`</li>
+  <li>a-tags that contain a href</li>
   <li>img-tags</li>
   <li>iframe-tags</li>
   <li>video-tags</li>
