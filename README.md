@@ -1,6 +1,6 @@
 # urlscanner
 
-<b> What's this program? </b>
+<h2> What's this program? </h2>
 <hr>
 <p>
   Ever gotten those pesky screamers shoved right up your [[BEAUTIFUL FACE]]?
@@ -10,7 +10,7 @@
   You can, of course specify <i>almost</i> everything to check for.
 </p>
 <hr>
-<b> How does it work? </b>
+<h2> How does it work? <h2>
 <hr>
 <p>
   So, let me explain what it actually does.
@@ -24,17 +24,12 @@
   By checking all of the elements, it determines whether it'd be a good
   idea to visit this website.
 <br>
-
-<b>Checked elements are</b>:
-  <ul>
-
-    <li>a-tags that contain a href</li> 
-    <li>img-tags</li>
-    <li>iframe-tags</li>
-    <li>video-tags</li>
-    <li>video-tags that have the "loop" property</li>
-
-  </ul>
-
-
+<hr>
+<h2>Hardcoded checked elements</h2>
+<b>These are the elements that the program checks.</b>
+    * a-tags that contain a href 
+    * img-tags</li>
+    * iframe-tags</li>
+    * video-tags</li>
+    * video-tags that have the "loop" property</li>
 </p>
