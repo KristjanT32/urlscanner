@@ -4,8 +4,10 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
@@ -22,6 +24,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -47,6 +50,7 @@ public class CheckerController {
     private VBox window;
     @FXML
     private Pane scanPanel;
+    static Stage stageInstance;
     // Labels
     @FXML
     private Label window_label;
@@ -79,15 +83,16 @@ public class CheckerController {
     private CheckBox toggle_noimages;
     @FXML
     private CheckBox toggle_novideos;
-    static Stage stageInstance;
-    String user = System.getProperty("user.name");
-
-    File file = new File("C:/Users/" + user + "/Desktop/website_html.txt");
     @FXML
     private CheckBox toggle_createfile;
+    public ArrayList<String> urls = new ArrayList<>();
+    String user = System.getProperty("user.name");
+    File file = new File("C:/Users/" + user + "/Desktop/website_html.txt");
+
     //Textfields
     @FXML
     private TextField url_field;
+
     // Misc.
     @FXML
     private ProgressBar scanProgress;
@@ -96,9 +101,15 @@ public class CheckerController {
     @FXML
     private Label label_progressdetails;
     @FXML
-    private CheckBox toggle_reportfile;
+    private ScrollPane recentUrlPane;
     @FXML
     private CheckBox toggle_showlog;
+    @FXML
+    private CheckBox toggle_saverecenturls;
+    @FXML
+    private CheckBox toggle_reportfile;
+    @FXML
+    private ListView<String> listview_recent;
 
     public static EventHandler<WindowEvent> onWindowClosed() {
         return event -> {
@@ -277,17 +288,8 @@ public class CheckerController {
         }
     }
 
-    public void reset() {
-        infoString = "";
-        scanProgress.setProgress(0);
-        log.clear();
-        operation_label.setText("Please wait...");
-        label_scan.setText("Working...");
-        label_progressdetails.setText("Progress details will appear here...");
-        stageInstance.setTitle("URL Checker");
-        setupPanel.setVisible(true);
-        scanPanel.setVisible(false);
-    }
+    @FXML
+    private ProgressIndicator loading_icon;
 
 
     String listLinks(Elements links) {
@@ -322,9 +324,67 @@ public class CheckerController {
         return out.toString();
     }
 
+    public void reset() {
+
+        // General
+        infoString = "";
+        scanProgress.setProgress(0);
+        log.clear();
+        operation_label.setText("Please wait...");
+        label_scan.setText("Working...");
+        label_progressdetails.setText("Please wait, validating information...");
+
+        // Primary labels
+        stageInstance.setTitle("URL Checker");
+        window_label.setText("KrisApps URL Analyzer");
+        window_label.setVisible(true);
+        window_label.setAlignment(Pos.CENTER_LEFT);
+
+        // Panes
+        setupPanel.setVisible(true);
+        scanPanel.setVisible(false);
+        recentUrlPane.setVisible(true);
+        loading_icon.setVisible(false);
+
+    }
+
+    void addRecentURLToList(String url) {
+        urls.add(url);
+        System.out.println("[Recent URLs]: Refresh");
+        listview_recent.getItems().clear();
+        listview_recent.getItems().addAll(urls);
+        System.out.println("[Recent URLs]: Complete!");
+    }
+
+    public void setURLElementHandlers() {
+        listview_recent.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                copySelectedURL(listview_recent.getSelectionModel().getSelectedIndex());
+            }
+        });
+    }
+
+    public void copySelectedURL(int selected) {
+        url_field.setText(listview_recent.getItems().get(selected));
+        System.out.println("Selected element: " + listview_recent.getItems().get(selected));
+    }
+
+
     public void startTest() {
+
+        // Prepare panes
         setupPanel.setVisible(false);
+        recentUrlPane.setVisible(false);
         scanPanel.setVisible(true);
+        loading_icon.setVisible(true);
+
+        // Reset labels
+
+        label_scan.setTextFill(Paint.valueOf("black"));
+        window_label.setText("Ongoing Analysis");
+        window_label.setAlignment(Pos.CENTER);
+
         delay(500, this::procedure);
     }
 
@@ -337,11 +397,12 @@ public class CheckerController {
 
         @Override
         public void run() {
-            scanProgress.setProgress(.3);
+            scanProgress.setProgress(.2);
             try {
                 if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                     log("Content type: " + connection.getContentType(), "Determined content type");
                     if (toggle_screamertest.isSelected()) {
+                        scanProgress.setProgress(.3);
                         log("Getting links and images...", "Checking HTML");
 
                         Document website = Jsoup.parse(connection.getURL(), 30000);
@@ -392,10 +453,9 @@ public class CheckerController {
                             if (videos.size() > 0) {
                                 unsafeness_score += 1;
                             }
-                            if (links.size() > 5) {
-                                unsafeness_score += 1;
-                            }
                         }
+
+                        log("Evaluating temporary results...", "Pre-evaluating...");
 
                         if (unsafeness_score > 1 && unsafeness_score < 4) {
                             scanResult = ScanResult.UNSAFE;
@@ -409,48 +469,18 @@ public class CheckerController {
 
 
                     }
-                    scanProgress.setProgress(.6);
+                    scanProgress.setProgress(.5);
 
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
                             if (toggle_basicinfo.isSelected()) {
+                                log("Getting website info...", "Collecting website information...");
                                 urlInfo.put("content_type", connection.getContentType());
                                 urlInfo.put("content_encoding", connection.getContentEncoding());
                                 urlInfo.put("server", connection.getHeaderField("Server"));
                             }
-                            scanProgress.setProgress(.8);
-                        }
-                    });
-
-                    log("Evaluating...", "Evaluating results...");
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            switch (scanResult) {
-
-                                case SAFE:
-                                    label_scan.setTextFill(Paint.valueOf("lime"));
-                                    label_scan.setText("SAFE");
-                                    break;
-                                case INCONCLUSIVE:
-                                    label_scan.setTextFill(Paint.valueOf("yellow"));
-                                    label_scan.setText("INCONCLUSIVE (a lot of links)");
-                                    break;
-                                case ERROR:
-                                    label_scan.setTextFill(Paint.valueOf("blue"));
-                                    label_scan.setText("ERROR (something may have forced the scan to stop)");
-                                    break;
-                                case UNSAFE:
-                                    label_scan.setTextFill(Paint.valueOf("orange"));
-                                    label_scan.setText("UNSAFE");
-                                    break;
-                                case POTENTIALLY_UNSAFE:
-                                    label_scan.setTextFill(Paint.valueOf("red"));
-                                    label_scan.setText("POTENTIALLY UNSAFE");
-                                    break;
-                            }
+                            scanProgress.setProgress(.7);
                         }
                     });
 
@@ -496,16 +526,53 @@ public class CheckerController {
                         fw.close();
                     }
 
-
-                    log("Scan complete.", "Completed!");
                     Platform.runLater(new Runnable() {
                         @Override
                         public void run() {
-                            stageInstance.setTitle("URL Checker");
-                            scanProgress.setProgress(1);
+                            log("Evaluating...", "Evaluating final results...");
+
+                            switch (scanResult) {
+
+                                case SAFE:
+                                    label_scan.setTextFill(Paint.valueOf("lime"));
+                                    label_scan.setText("SAFE");
+                                    break;
+                                case INCONCLUSIVE:
+                                    label_scan.setTextFill(Paint.valueOf("yellow"));
+                                    label_scan.setText("INCONCLUSIVE (a lot of links)");
+                                    break;
+                                case ERROR:
+                                    label_scan.setTextFill(Paint.valueOf("blue"));
+                                    label_scan.setText("ERROR (something may have forced the scan to stop)");
+                                    break;
+                                case UNSAFE:
+                                    label_scan.setTextFill(Paint.valueOf("orange"));
+                                    label_scan.setText("UNSAFE");
+                                    break;
+                                case POTENTIALLY_UNSAFE:
+                                    label_scan.setTextFill(Paint.valueOf("red"));
+                                    label_scan.setText("POTENTIALLY UNSAFE");
+                                    break;
+                            }
+                            scanProgress.setProgress(.8);
+
+                            log("Scan complete.", "Evaluation complete!");
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    stageInstance.setTitle("URL Checker");
+                                    scanProgress.setProgress(1);
+                                    addRecentURLToList(connection.getURL().toString());
+                                }
+                            });
                         }
                     });
-
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            scanProgress.setProgress(.9);
+                        }
+                    });
                 } else {
                     log("HTTP returned a non-200 response.", "Website did not respond in an expected way.");
                     Platform.runLater(new Runnable() {
@@ -622,8 +689,10 @@ public class CheckerController {
                 @Override
                 public void run() {
                     operation_label.setText(infoString);
+                    loading_icon.setVisible(false);
                 }
             });
+
         }
 
     }

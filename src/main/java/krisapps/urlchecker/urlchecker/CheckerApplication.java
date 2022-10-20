@@ -15,7 +15,7 @@ public class CheckerApplication extends javafx.application.Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(CheckerApplication.class.getResource("application_ui.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 900, 700);
+        Scene scene = new Scene(fxmlLoader.load(), 1050, 813);
 
         // Configure window properties.
         stage.setResizable(false);
@@ -23,7 +23,6 @@ public class CheckerApplication extends javafx.application.Application {
         stage.getIcons().add(new Image("/images/icon.jpeg"));
         stage.setScene(scene);
         stage.show();
-
         scene.getWindow().setOnCloseRequest(CheckerController.onWindowClosed());
         CheckerController.sceneInstance = scene;
         CheckerController.stageInstance = stage;
