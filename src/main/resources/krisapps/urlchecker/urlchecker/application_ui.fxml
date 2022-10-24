@@ -20,7 +20,7 @@
       <Pane fx:id="container" prefHeight="809.0" prefWidth="1060.0">
          <children>
             <Pane fx:id="setupPanel" layoutX="-2.0" onMouseMoved="#refreshSetupInfo" pickOnBounds="false"
-                  prefHeight="701.0" prefWidth="568.0">
+                  prefHeight="701.0" prefWidth="568.0" visible="false">
                <children>
                   <TextField fx:id="url_field" layoutX="12.0" layoutY="73.0"
                              onInputMethodTextChanged="#refreshSetupInfo" onKeyTyped="#refreshSetupInfo"
@@ -112,7 +112,7 @@
                   </Label>
                </children>
             </Pane>
-            <Pane fx:id="scanPanel" layoutX="49.0" layoutY="24.0" prefHeight="672.0" prefWidth="912.0" visible="false">
+            <Pane fx:id="scanPanel" layoutX="49.0" layoutY="24.0" prefHeight="672.0" prefWidth="912.0">
                <children>
                   <Label fx:id="operation_label" alignment="CENTER" contentDisplay="CENTER" layoutX="208.0"
                          layoutY="213.0" prefHeight="257.0" prefWidth="498.0" style="-fx-background-color: black;"
@@ -122,8 +122,8 @@
                         <Font name="JetBrains Mono Regular" size="13.0"/>
                      </font>
                   </Label>
-                  <Label fx:id="label_scan" alignment="CENTER" layoutX="182.0" layoutY="36.0" prefHeight="30.0"
-                         prefWidth="552.0" text="Analyzing...">
+                  <Label fx:id="label_scan" alignment="CENTER" layoutX="3.0" layoutY="38.0" prefHeight="43.0"
+                         prefWidth="900.0" text="Analyzing...">
                      <font>
                         <Font name="Segoe UI Black" size="30.0"/>
                      </font>
@@ -164,7 +164,7 @@
                </children>
             </Pane>
             <ScrollPane fx:id="recentUrlPane" fitToHeight="true" hbarPolicy="NEVER" layoutX="571.0" layoutY="-2.0"
-                        minViewportHeight="200.0" prefHeight="713.0" prefWidth="425.0">
+                        minViewportHeight="200.0" prefHeight="713.0" prefWidth="425.0" visible="false">
                <content>
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="699.0" prefWidth="414.0"
                               style="-fx-border-color: black; -fx-border-width: 4;">
