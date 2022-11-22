@@ -114,7 +114,7 @@ public class CheckerController {
     public static EventHandler<WindowEvent> onWindowClosed() {
         return event -> {
             System.out.println("Stopping all processes...");
-            stageInstance.setTitle("Closing program...");
+            stageInstance.setTitle("KrisApps URL Analyzer - " + "Closing program...");
             System.exit(0);
         };
     }
@@ -134,7 +134,16 @@ public class CheckerController {
         new Thread(sleeper).start();
     }
 
+    public void refreshStatusBar(String statusText) {
+        if (statusText.trim().equals("")) {
+            stageInstance.setTitle("KrisApps URL Analyzer");
+        } else {
+            stageInstance.setTitle("KrisApps URL Analyzer - " + statusText);
+        }
+    }
+
     public void refreshSetupInfo() {
+        refreshStatusBar("Setup");
         label_statusvalue.setText("All good!");
         label_statusvalue.setTextFill(Paint.valueOf("lime"));
         if (url_field.getText().isEmpty()) {
@@ -203,7 +212,7 @@ public class CheckerController {
 
     void procedure() {
         log.setVisible(toggle_showlog.isSelected());
-        stageInstance.setTitle("Processing your link...");
+        refreshStatusBar("Processing URL...");
         start = System.currentTimeMillis();
         scanProgress.setProgress(.1);
         label_scan.setText("Analyzing...");
@@ -225,6 +234,7 @@ public class CheckerController {
         try {
             connection = (HttpsURLConnection) url.openConnection();
             log("Successfully established a connection to webpage.", "Retrieving data...");
+            refreshStatusBar("Getting data...");
             AnalysysThread analysysThread = new AnalysysThread(connection);
             analysysThread.start();
         } catch (IOException e) {
@@ -235,7 +245,7 @@ public class CheckerController {
         } catch (IOException e) {
             log("Could not open the connection: " + e.getMessage(), "Failed to check the URL!");
             label_scan.setText("Failed to check the URL!");
-            stageInstance.setTitle("URL Checker");
+            refreshStatusBar("");
             scanProgress.setProgress(1);
             scanResult = ScanResult.INCONCLUSIVE;
         }
@@ -335,7 +345,7 @@ public class CheckerController {
         label_progressdetails.setText("Please wait, validating information...");
 
         // Primary labels
-        stageInstance.setTitle("URL Checker");
+        refreshStatusBar("");
         window_label.setText("KrisApps URL Analyzer");
         window_label.setVisible(true);
         window_label.setAlignment(Pos.CENTER_LEFT);
@@ -530,6 +540,7 @@ public class CheckerController {
                         @Override
                         public void run() {
                             log("Evaluating...", "Evaluating final results...");
+                            refreshStatusBar("Finishing up...");
 
                             switch (scanResult) {
 
@@ -560,7 +571,7 @@ public class CheckerController {
                             Platform.runLater(new Runnable() {
                                 @Override
                                 public void run() {
-                                    stageInstance.setTitle("URL Checker");
+                                    refreshStatusBar("");
                                     scanProgress.setProgress(1);
                                     addRecentURLToList(connection.getURL().toString());
                                 }
@@ -625,7 +636,7 @@ public class CheckerController {
                             } catch (IOException e) {
                                 log("No response code was returned.", "The website did not provide any response.");
                             }
-                            stageInstance.setTitle("URL Checker");
+                            refreshStatusBar("");
                             scanProgress.setProgress(1);
                             button_finish.setDisable(false);
                         }
@@ -642,9 +653,9 @@ public class CheckerController {
                     operation_label.setText("Some looped videos were detected - the website may contain a jumpscare/screamer.");
                     infoString = ""
                             + "Analysis Results\n"
-                            + "\nWebsite Content Type: " + urlInfo.get("content_type")
-                            + "\nWebsite Content Length: " + urlInfo.get("content_length")
-                            + "\nWebsite Server: " + urlInfo.get("server")
+                            + "\nWebsite Content Type: " + (urlInfo.get("content_type") == null ? "Failed to determine" : urlInfo.get("content_type"))
+                            + "\nWebsite Content Length: " + (urlInfo.get("content_length") == null ? "Failed to determine" : urlInfo.get("content_length"))
+                            + "\nWebsite Server: " + (urlInfo.get("server") == null ? "Failed to determine" : urlInfo.get("server"))
                             + "\nLinks found: " + links_n
                             + "\nImages found: " + imagesFound()
                             + "\nVideos found (non-looped): " + videosFound()
@@ -654,9 +665,9 @@ public class CheckerController {
                 } else {
                     infoString = ""
                             + "Analysis Results\n"
-                            + "\nWebsite Content Type: " + urlInfo.get("content_type")
-                            + "\nWebsite Content Length: " + urlInfo.get("content_length")
-                            + "\nWebsite Server: " + urlInfo.get("server")
+                            + "\nWebsite Content Type: " + (urlInfo.get("content_type") == null ? "Failed to determine" : urlInfo.get("content_type"))
+                            + "\nWebsite Content Length: " + (urlInfo.get("content_length") == null ? "Failed to determine" : urlInfo.get("content_length"))
+                            + "\nWebsite Server: " + (urlInfo.get("server") == null ? "Failed to determine" : urlInfo.get("server"))
                             + "\nLinks found: " + links_n
                             + "\nImages found: " + imagesFound()
                             + "\nVideos found (non-looped): " + videosFound()
